@@ -137,7 +137,7 @@ export async function build({
    */
   utils.task("Generate Types bundle")
   const dtsBundle = await rollup({
-    input: `${dest}/cjs/src/index.d.ts`,
+    input: src.map((path) => `${dest}/cjs/${path.replace(".ts", ".d.ts")}`),
     plugins: [pluginDTS()],
   })
   utils.pass("Done")
@@ -146,7 +146,7 @@ export async function build({
    * Write d.ts Files
    */
 
-  const typesDir = `${dest}/types`
+  const typesDir = `${dest}/.types`
   utils.task(`Write Types files to ${stringify(typesDir)}`)
   await dtsBundle.write({
     dir: typesDir,
@@ -165,6 +165,7 @@ export async function build({
    * Remove empty directories
    */
   utils.task("Remove empty directories in cjs directory")
+
   /**
    * `path.resolve` to fix a bug
    * https://github.com/jonschlinkert/delete-empty/issues/14

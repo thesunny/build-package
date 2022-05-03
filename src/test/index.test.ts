@@ -18,31 +18,32 @@ describe("index", () => {
       await utils.emptyDir(".samples")
     })
   })
-  // it("should fail with a bad src", async () => {
-  //   await logger.silence(async () => {
-  //     await expect(
-  //       async () =>
-  //         await build({
-  //           title: "Sample One",
-  //           src: ["./samples/simple/index.ts"],
-  //           dest: ".samples/simple",
-  //         })
-  //     ).rejects.toThrow("should not start with")
-  //   })
-  // })
 
-  // it("should fail with a bad src", async () => {
-  //   await expect(
-  //     async () =>
-  //       await build({
-  //         title: "Sample One",
-  //         src: ["/samples/simple/index.ts"],
-  //         dest: ".samples/simple",
-  //       })
-  //   ).rejects.toThrow("should not start with")
-  // })
+  it("should fail with a bad src", async () => {
+    await logger.silence(async () => {
+      await expect(
+        async () =>
+          await build({
+            title: "Sample One",
+            src: ["./samples/simple/index.ts"],
+            dest: ".samples/simple",
+          })
+      ).rejects.toThrow("should not start with")
+    })
+  })
 
-  it.only("should build a single file", async () => {
+  it("should fail with a bad src", async () => {
+    await expect(
+      async () =>
+        await build({
+          title: "Sample One",
+          src: ["/samples/simple/index.ts"],
+          dest: ".samples/simple",
+        })
+    ).rejects.toThrow("should not start with")
+  })
+
+  it("should build a single file", async () => {
     await build({
       title: "Single",
       src: ["samples/single/index.ts"],
@@ -50,11 +51,19 @@ describe("index", () => {
     })
   })
 
-  it.only("should build multiple files together", async () => {
+  it("should build multiple files together", async () => {
     await build({
       title: "Multiple",
       src: ["samples/multiple/index.ts"],
       dest: ".samples/multiple",
+    })
+  })
+
+  it("should build multiple files in pieces", async () => {
+    await build({
+      title: "Multiple Separated",
+      src: ["samples/multiple/index.ts", "samples/multiple/add.ts"],
+      dest: ".samples/multiple-separated",
     })
   })
 })
