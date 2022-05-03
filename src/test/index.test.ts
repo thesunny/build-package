@@ -14,9 +14,9 @@ describe("index", () => {
   })
 
   beforeAll(async () => {
-    // await logger.silence(async () => {
-    //   await utils.emptyDir(".samples")
-    // })
+    await logger.silence(async () => {
+      await utils.emptyDir(".samples")
+    })
   })
   // it("should fail with a bad src", async () => {
   //   await logger.silence(async () => {
@@ -42,11 +42,19 @@ describe("index", () => {
   //   ).rejects.toThrow("should not start with")
   // })
 
-  it.only("should pass", async () => {
+  it.only("should build a single file", async () => {
     await build({
       title: "Single",
       src: ["samples/single/index.ts"],
       dest: ".samples/single",
+    })
+  })
+
+  it.only("should build multiple files together", async () => {
+    await build({
+      title: "Multiple",
+      src: ["samples/multiple/index.ts"],
+      dest: ".samples/multiple",
     })
   })
 })
