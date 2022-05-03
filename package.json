@@ -5,6 +5,7 @@
   "author": "Sunny Hirai <thesunny@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/delete-empty": "^3.0.2",
     "@types/jest": "^27",
     "@types/node": "^17.0.31",
     "@typescript-eslint/eslint-plugin": "^5.15.0",
@@ -26,9 +27,13 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-replace": "^4.0.0",
-    "@thesunny/script-utils": "^0.1.39",
+    "@thesunny/script-utils": "^0.1.43",
+    "@types/rimraf": "^3.0.2",
+    "delete-empty": "^3.0.0",
     "just-map-keys": "^2.1.2",
+    "rimraf": "^3.0.2",
     "rollup": "^2.71.1",
+    "rollup-plugin-dts": "^4.2.1",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.31.2"
   },

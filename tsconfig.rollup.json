@@ -19,7 +19,11 @@
   "compilerOptions": {
     "module": "esnext",
     "jsx": "react",
-    "declaration": false,
+    /**
+     * NOTE: declaration is overrided in the build process but we have it
+     * set to true in this file. Not significant though.
+     */
+    "declaration": true,
     /**
      * There is a failure when transpiling "??" which is left intact but is
      * not supported by earlier versions of Node.

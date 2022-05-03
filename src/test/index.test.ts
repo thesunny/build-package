@@ -1,33 +1,52 @@
 import { build } from ".."
+import * as utils from "@thesunny/script-utils"
+import { logger } from "@thesunny/script-utils"
 
 describe("index", () => {
-  it("should fail with a bad src", async () => {
-    await expect(
-      async () =>
-        await build({
-          title: "Sample One",
-          src: ["./sample-one/index.ts"],
-          dest: ".sample-one",
-        })
-    ).rejects.toThrow("should not start with")
+  const jestConsole = console
+
+  beforeEach(() => {
+    global.console = require("console")
   })
 
-  it("should fail with a bad src", async () => {
-    await expect(
-      async () =>
-        await build({
-          title: "Sample One",
-          src: ["sample-one/index.ts"],
-          dest: ".sample-one",
-        })
-    ).rejects.toThrow("should not start with")
+  afterEach(() => {
+    global.console = jestConsole
   })
+
+  beforeAll(async () => {
+    // await logger.silence(async () => {
+    //   await utils.emptyDir(".samples")
+    // })
+  })
+  // it("should fail with a bad src", async () => {
+  //   await logger.silence(async () => {
+  //     await expect(
+  //       async () =>
+  //         await build({
+  //           title: "Sample One",
+  //           src: ["./samples/simple/index.ts"],
+  //           dest: ".samples/simple",
+  //         })
+  //     ).rejects.toThrow("should not start with")
+  //   })
+  // })
+
+  // it("should fail with a bad src", async () => {
+  //   await expect(
+  //     async () =>
+  //       await build({
+  //         title: "Sample One",
+  //         src: ["/samples/simple/index.ts"],
+  //         dest: ".samples/simple",
+  //       })
+  //   ).rejects.toThrow("should not start with")
+  // })
 
   it.only("should pass", async () => {
     await build({
-      title: "Sample One",
-      src: ["sample-one/index.ts"],
-      dest: ".sample-one",
+      title: "Single",
+      src: ["samples/single/index.ts"],
+      dest: ".samples/single",
     })
   })
 })

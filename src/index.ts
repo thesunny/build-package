@@ -1,7 +1,12 @@
 import { rollup } from "rollup"
 import * as utils from "@thesunny/script-utils"
+import { stringify } from "@thesunny/script-utils"
 import { createPlugins } from "./plugins"
 import { onwarn } from "./onwarn"
+import pluginDTS from "rollup-plugin-dts"
+import rimraf from "rimraf"
+import deleteEmpty from "delete-empty"
+import path from "path"
 
 type BuildOptions = {
   title: string
@@ -49,38 +54,121 @@ export async function build({
   straightPath(dest, "dest")
   straightPath
 
-  utils.heading("Ensure src files exist")
+  utils.ensureEmpty(dest)
+
   for (const s of src) {
     utils.ensureFileExists(s)
   }
 
-  utils.heading("Generate plugins")
-  const plugins = createPlugins({ tsconfig: "tsconfig.ts-build.json" })
+  /**
+   * Generate CJS and Types plugins
+   */
 
+  utils.task("Generate CJS and Types plugins")
+  const cjsAndTypesPlugins = createPlugins({
+    tsconfig: "tsconfig.rollup.json",
+    declaration: true,
+  })
+  utils.pass("Done")
+
+  /**
+   * Generate CJS and Types bundle
+   */
+
+  utils.task("Generate CJS and Types bundle")
   const bundle = await rollup({
     input: src,
-    plugins,
+    plugins: cjsAndTypesPlugins,
     onwarn,
     external,
   })
+  utils.pass("Done")
 
   /**
    * Write CommonJS Files
    */
-  utils.heading("Write CommonJS files")
+  const cjsDir = `${dest}/cjs`
+  utils.task(`Write CJS Files to ${stringify(cjsDir)}`)
   await bundle.write({
-    dir: `${dest}/cjs`,
+    dir: cjsDir,
     format: "cjs",
     sourcemap,
   })
+  utils.pass("Done")
+
+  /**
+   * Generate ESM plugins
+   */
+
+  utils.task("Generate ESM plugins")
+  const esmPlugins = createPlugins({
+    tsconfig: "tsconfig.rollup.json",
+    declaration: false,
+  })
+  utils.pass("Done")
+
+  /**
+   * Generate ESM bundle
+   */
+
+  utils.task("Generate CJS and Types bundle")
+  const esmBundle = await rollup({
+    input: src,
+    plugins: esmPlugins,
+    onwarn,
+    external,
+  })
+  utils.pass("Done")
 
   /**
    * Write ESM Files
    */
-  utils.heading("Write CommonJS files")
-  await bundle.write({
-    dir: `${dest}/esm`,
+  const esmDir = `${dest}/esm`
+  utils.task(`Write ESM files to ${stringify(esmDir)}`)
+  await esmBundle.write({
+    dir: esmDir,
     format: "esm",
     sourcemap,
   })
+  utils.pass("Done")
+
+  /**
+   * Generate d.ts bundle
+   */
+  utils.task("Generate Types bundle")
+  const dtsBundle = await rollup({
+    input: `${dest}/cjs/src/index.d.ts`,
+    plugins: [pluginDTS()],
+  })
+  utils.pass("Done")
+
+  /**
+   * Write d.ts Files
+   */
+
+  const typesDir = `${dest}/types`
+  utils.task(`Write Types files to ${stringify(typesDir)}`)
+  await dtsBundle.write({
+    dir: typesDir,
+    format: "es",
+  })
+  utils.pass("Done")
+
+  /**
+   * Remove d.ts files from cjs directory
+   */
+  utils.task("Remove d.ts files from cjs directory")
+  rimraf.sync(`${dest}/cjs/**/*.d.ts`)
+  utils.pass("Done")
+
+  /**
+   * Remove empty directories
+   */
+  utils.task("Remove empty directories in cjs directory")
+  /**
+   * `path.resolve` to fix a bug
+   * https://github.com/jonschlinkert/delete-empty/issues/14
+   */
+  const deletedDirs = await deleteEmpty(path.resolve(`${dest}/cjs`))
+  utils.pass(`Done. Removed ${deletedDirs.length} empty dirs.`)
 }

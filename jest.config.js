@@ -50,4 +50,5 @@ module.exports = {
   moduleNameMapper: {
     "^~/(.*)$": "<rootDir>/$1",
   },
+  watchPathIgnorePatterns: ["<rootDir>/.samples"],
 }

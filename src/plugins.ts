@@ -12,6 +12,7 @@ type PluginOptions = {
   env?: Record<string, string>
   replace?: Record<string, string>
   terser?: boolean
+  declaration: boolean
 }
 
 export function createPlugins({
@@ -19,26 +20,28 @@ export function createPlugins({
   env = {},
   replace = {},
   terser = true,
+  declaration,
 }: PluginOptions) {
   if (tsconfig.startsWith("/"))
     throw new Error(`tsconfig should not start with a /`)
 
   const plugins: Array<Plugin | undefined> = [
-    pluginReplace({
-      ...mapKeys(env, (key) => `process.env.${key}`),
-      ...replace,
-      preventAssignment: true,
-    }),
+    // pluginReplace({
+    //   ...mapKeys(env, (key) => `process.env.${key}`),
+    //   ...replace,
+    //   preventAssignment: true, // this will be default soon. prevents noisy output.
+    // }),
     pluginNodeResolve({
       preferBuiltins: true,
+      // extensions: [".ts", ".mjs", ".js", ".json", ".node"],
     }),
     pluginCommonjs(),
     pluginJson(),
     pluginTypescript2({
-      tsconfig: "tsconfig.rollup.json",
+      tsconfig,
       tsconfigOverride: {
         compilerOptions: {
-          declaration: true,
+          declaration,
         },
       },
     }),
