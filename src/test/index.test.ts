@@ -66,4 +66,38 @@ describe("index", () => {
       dest: ".samples/multiple-separated",
     })
   })
+
+  /**
+   * WORKING ON THIS!:
+   *
+   * Currently, I am working on getting TypeScript to output into a nice set of
+   * files in the correct directory.
+   *
+   * I have it compiling down to the few files I want, but I don't have it
+   * moved in the right position yet.
+   *
+   * https://medium.com/@martin_hotell/typescript-library-tips-rollup-your-types-995153cc81c7
+   *
+   * There is also an option called `declarationDir` which should separate the
+   * .d.ts files into a separate directory, but it doesn't seem to be working
+   * when I set it in rollup's plugins configuration. It's possible it's a
+   * caching issue though.
+   *
+   * I just figured out I can use a Record<string, string> for the src to
+   * control where the files end up. This is really nice.
+   *
+   * We can try and use the same mapping to create the .d.ts files.
+   */
+
+  it.only("should build nested files in pieces", async () => {
+    await build({
+      title: "Nested",
+      // src: ["samples/nested/index.ts", "samples/nested/math/index.ts"],
+      src: {
+        index: "samples/nested/index.ts",
+        "math/index": "samples/nested/math/index.ts",
+      },
+      dest: ".samples/nested",
+    })
+  })
 })

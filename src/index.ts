@@ -48,17 +48,17 @@ export async function build({
   sourcemap = false,
 }: BuildOptions) {
   utils.title(`Build ${JSON.stringify(title)}`)
-  for (const s of src) {
-    straightPath(s, "src")
-  }
+  // for (const s of src) {
+  //   straightPath(s, "src")
+  // }
   straightPath(dest, "dest")
   straightPath
 
   utils.ensureEmpty(dest)
 
-  for (const s of src) {
-    utils.ensureFileExists(s)
-  }
+  // for (const s of src) {
+  //   utils.ensureFileExists(s)
+  // }
 
   /**
    * Generate CJS and Types plugins

@@ -26,14 +26,13 @@ export function createPlugins({
     throw new Error(`tsconfig should not start with a /`)
 
   const plugins: Array<Plugin | undefined> = [
-    // pluginReplace({
-    //   ...mapKeys(env, (key) => `process.env.${key}`),
-    //   ...replace,
-    //   preventAssignment: true, // this will be default soon. prevents noisy output.
-    // }),
+    pluginReplace({
+      ...mapKeys(env, (key) => `process.env.${key}`),
+      ...replace,
+      preventAssignment: true, // this will be default soon. prevents noisy output.
+    }),
     pluginNodeResolve({
       preferBuiltins: true,
-      // extensions: [".ts", ".mjs", ".js", ".json", ".node"],
     }),
     pluginCommonjs(),
     pluginJson(),
